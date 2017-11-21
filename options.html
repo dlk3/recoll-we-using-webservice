@@ -1,328 +1,223 @@
-﻿<html>
+<html>
+  
+  <head>
     
-    <head>
-        
-        <meta charset="utf-8"/>
+    <meta charset="utf-8"/>
 
-<!--
-/************************************************************************/
-/*                                                                      */
-/*      Save Page WE - Generic WebExtension - Options Page              */
-/*                                                                      */
-/*      HTML and CSS for Options Page                                   */
-/*                                                                      */
-/*      Last Edit - 27 Oct 2017                                         */
-/*                                                                      */
-/*      Copyright (C) 2016-2017 DW-dev                                  */
-/*                                                                      */
-/*      Distributed under the GNU General Public License version 2      */
-/*      See LICENCE.txt file and http://www.gnu.org/licenses/           */
-/*                                                                      */
-/************************************************************************/
--->
+    <!--
+        /*
+        *      RecollWebext - WebExtension - Options Page
+        *
+        *      A lot of code was copied from or inspired by the savepage-WE
+        *      extension.
+        *
+        *      Copyright (C) 2017 jfd@recoll.org
+        *      Copyright (C) 2016-2017 DW-dev
+        *
+        *      Distributed under the GNU General Public License version 2
+        *      See LICENCE.txt file and http://www.gnu.org/licenses/
+        */
+      -->
 
-        <title>Save Page WE Options</title>
-        
-        <script src="options.js"></script>
-        
-        <style>
-            
-            /* Chrome - maximum height to avoid scrolling is 531px */
-            
-            body
-            {
-                background-color: #F0F0F0;
-            }
-            
-            #options
-            {
-                width: 337px;
-                margin: auto;
-                padding: 5px;
-                border: 1px solid #808080;
-                font-family: "Segoe UI","Helvetica Neue",Ubuntu,Arial;
-                font-size: 12px;
-                background-color: white;
-            }
-            
-            #options *
-            {
-                font-family: "Segoe UI","Helvetica Neue",Ubuntu,Arial;
-                font-size: 12px;
-            }
-            
-            #options-title
-            {
-                font-size: 16px;
-                margin-bottom: 7px;
-            }
-            
-            #options-tabbar
-            {
-                margin: 0px 3px 4px 2px;
-                padding: 1px 1px 1px 2px;
-                border: 1px solid #C0C0C0;
-            }
-            
-            #options-tabbar button
-            {
-                display: inline-block;
-                margin: 0px -1px;
-                padding: 1px 6px;
-                background-color: #E0E0E0;
-                border: 1px solid #C0C0C0;
-                cursor: pointer;
-            }
-            
-            #options-tabbar button:not([selected]):hover
-            {
-                background-color: #F0F0F0;
-            }
-            
-            #options-tabbar button:not([selected]):active
-            {
-                background-color: #FFFFFF;
-            }
-            
-            #options-tabbar button[selected]
-            {
-                background-color: #FFFFFF;
-            }
-            
-            #options-tab-general,
-            #options-tab-saveditems
-            {
-                /* display: none; */
-            }
-            
-            #options-tabs
-            {
-                height: 420px;
-            }
-            
-            form
-            {
-                margin-bottom: 3px;
-            }
-            
-            #options-buttonaction fieldset i
-            {
-                color: #808080;
-            }
-            
-            fieldset div
-            {
-                margin-bottom: 5px;
-            }
-            
-            fieldset > div:last-child
-            {
-                margin-bottom: 0px;
-            }
-            
-            fieldset input[type="checkbox"]
-            {
-                margin-right: 7px;
-                vertical-align: 0px;
-            }
-            
-            fieldset input[type="radio"]
-            {
-                margin-left: 4px;
-                margin-right: 7px;
-                vertical-align: 0px;
-            }
-            
-            fieldset input[type="number"]
-            {
-                width: 50px;
-                margin-left: 4px;
-                margin-right: 8px;
-                padding: 1px 0px 1px 3px;
-                text-align: center;
-                vertical-align: 2px;
-            }
-            
-            #options-maxframedepth
-            {
-                margin-bottom: 3px;
-            }
-            
-            fieldset label
-            {
-                vertical-align: 2px;
-            }
-            
-            #options-save
-            {
-                margin-top: 10px;
-            }
-            
-            #options-save-button
-            {
-                width: 70px;
-                margin-left: 2px;
-                margin-bottom: 2px;
-                padding-bottom: 2px;
-                text-align: center;
-            }
-            
-            #options-save-status
-            {
-                margin-left: 15px;
-                color: #404040;
-                visibility: hidden;
-            }
-            
-        </style>
-        
-    </head>
+    <title>RecollWebext Options</title>
     
-    <body>
+    <script src="options.js"></script>
+    
+    <style>
+      
+      /* Chrome - maximum height to avoid scrolling is 531px */
+      
+      body
+      {
+      background-color: #F0F0F0;
+      }
+      
+      #options
+      {
+      width: 337px;
+      margin: auto;
+      padding: 5px;
+      border: 1px solid #808080;
+      font-family: "Segoe UI","Helvetica Neue",Ubuntu,Arial;
+      font-size: 12px;
+      background-color: white;
+      }
+      
+      #options *
+      {
+      font-family: "Segoe UI","Helvetica Neue",Ubuntu,Arial;
+      font-size: 12px;
+      }
+      
+      #options-title
+      {
+      font-size: 16px;
+      margin-bottom: 7px;
+      }
+      
+      #options-tabbar
+      {
+      margin: 0px 3px 4px 2px;
+      padding: 1px 1px 1px 2px;
+      border: 1px solid #C0C0C0;
+      }
+      
+      #options-tabbar button
+      {
+      display: inline-block;
+      margin: 0px -1px;
+      padding: 1px 6px;
+      background-color: #E0E0E0;
+      border: 1px solid #C0C0C0;
+      cursor: pointer;
+      }
+      
+      #options-tabbar button:not([selected]):hover
+      {
+      background-color: #F0F0F0;
+      }
+      
+      #options-tabbar button:not([selected]):active
+      {
+      background-color: #FFFFFF;
+      }
+      
+      #options-tabbar button[selected]
+      {
+      background-color: #FFFFFF;
+      }
+      
+      #options-tab-general,
+      #options-tab-saveditems
+      {
+      /* display: none; */
+      }
+      
+      #options-tabs
+      {
+      height: 420px;
+      }
+      
+      form
+      {
+      margin-bottom: 3px;
+      }
+      
+      #options-buttonaction fieldset i
+      {
+      color: #808080;
+      }
+      
+      fieldset div
+      {
+      margin-bottom: 5px;
+      }
+      
+      fieldset > div:last-child
+      {
+      margin-bottom: 0px;
+      }
+      
+      fieldset input[type="checkbox"]
+      {
+      margin-right: 7px;
+      vertical-align: 0px;
+      }
+      
+      fieldset input[type="radio"]
+      {
+      margin-left: 4px;
+      margin-right: 7px;
+      vertical-align: 0px;
+      }
+      
+      fieldset input[type="number"]
+      {
+      width: 50px;
+      margin-left: 4px;
+      margin-right: 8px;
+      padding: 1px 0px 1px 3px;
+      text-align: center;
+      vertical-align: 2px;
+      }
+      
+      #options-maxframedepth
+      {
+      margin-bottom: 3px;
+      }
+      
+      fieldset label
+      {
+      vertical-align: 2px;
+      }
+      
+      #options-save
+      {
+      margin-top: 10px;
+      }
+      
+      #options-save-button
+      {
+      width: 70px;
+      margin-left: 2px;
+      margin-bottom: 2px;
+      padding-bottom: 2px;
+      text-align: center;
+      }
+      
+      #options-save-status
+      {
+      margin-left: 15px;
+      color: #404040;
+      visibility: hidden;
+      }
+      
+    </style>
+    
+  </head>
+  
+  <body>
+    
+    <div id="options">
+      
+      <div>
         
-        <div id="options">
-            
+        <div id="options-title">Recoll Options</div>
+        
+        <form id="options-autosave">
+          <fieldset>
+            <legend>&nbsp;Automatic Action&nbsp;</legend>
             <div>
-                
-                <div id="options-title">Save Page WE Options</div>
-                
-                <div id="options-tabbar">
-                    <button id="options-tabbar-general">General</button>
-                    <button id="options-tabbar-saveditems">Saved Items</button>
-                </div>
-                
-                <div id="options-tabs">
-                    
-                    <div id="options-tab-general">
-                    
-                        <form id="options-buttonaction">
-                            <fieldset>
-                                <legend>&nbsp;Button Action&nbsp;</legend>
-                                <div>
-                                    <input id="options-currentstate" type="radio" name="action" value="0"/><label for="options-currentstate">Save Current State <i>&ndash; only Current State items</i></label>
-                                </div>
-                                <div>
-                                    <input id="options-chosenitems" type="radio" name="action" value="1"/><label for="options-chosenitems">Save Chosen Items <i>&ndash; plus chosen Additional items</i></label>
-                                </div>
-                                <div>
-                                    <input id="options-completepage" type="radio" name="action" value="2"/><label for="options-completepage">Save Complete Page <i>&ndash; all except CSS images (all)</i></label>
-                                </div>
-                            </fieldset>
-                        </form>
-                        
-                        <form>
-                            <fieldset>
-                                <legend>&nbsp;User Interface&nbsp;</legend>
-                                <div>
-                                    <input id="options-showsubmenu" type="checkbox"/><label for="options-showsubmenu">Show add-on submenu on context menu</label>
-                                </div>
-                                <div>
-                                    <input id="options-showwarning" type="checkbox"/><label for="options-showwarning">Show warning if any resources cannot be saved</label>
-                                </div>
-                                <div>
-                                    <input id="options-showurllist" type="checkbox"/><label for="options-showurllist">Show list with URLs of all unsaved resources</label>
-                                </div>
-                                <div>
-                                    <input id="options-prefixfilename" type="checkbox"/><label for="options-prefixfilename">Prefix file name with website domain name</label>
-                                </div>
-                                <div>
-                                    <input id="options-suffixfilename" type="checkbox"/><label for="options-suffixfilename">Suffix file name with date and time</label>
-                                </div>
-                            </fieldset>
-                        </form>
-                        
-                        <form>
-                            <fieldset>
-                                <legend>&nbsp;Save Method&nbsp;</legend>
-                                <div>
-                                    <input id="options-usepageloader" type="checkbox"/><label for="options-usepageloader">Use page loader to reduce saved file size</label>
-                                </div>
-                                <div>
-                                    <input id="options-removeunsavedurls" type="checkbox"/><label for="options-removeunsavedurls">Remove URLs of all unsaved resources</label>
-                                </div>
-                                <div>
-                                    <input id="options-includeinfobar" type="checkbox"/><label for="options-includeinfobar">Include information bar at top of page</label>
-                                </div>
-                                <div>
-                                    <input id="options-includesummary" type="checkbox"/><label for="options-includesummary">Include metrics and resource summary</label>
-                                </div>
-                            </fieldset>
-                        </form>
-                        
-                    </div>
-                    
-                    <div id="options-tab-saveditems">
-                        
-                        <form>
-                            <fieldset>
-                                <legend>&nbsp;Saved Items&nbsp;</legend>
-                                <div>
-                                    Current State:
-                                </div>
-                                <div>
-                                    <input type="checkbox" checked disabled /><label>HTML elements (excluding multimedia)</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" checked disabled /><label>CSS style sheets</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" checked disabled /><label>HTML images (currently displayed)</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" checked disabled /><label>CSS images (currently displayed)</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" checked disabled /><label>CSS fonts (used by this browser)</label>
-                                </div>
-                                <div>
-                                    Additional:
-                                </div>
-                                <div>
-                                    <input id="options-savehtmlaudiovideo" type="checkbox"/><label for="options-savehtmlaudiovideo">HTML elements (audio & video)</label>
-                                </div>
-                                <div>
-                                    <input id="options-savehtmlobjectembed" type="checkbox"/><label for="options-savehtmlobjectembed">HTML elements (object & embed)</label>
-                                </div>
-                                <div>
-                                    <input id="options-savehtmlimagesall" type="checkbox"/><label for="options-savehtmlimagesall">HTML images (all)</label>
-                                </div>
-                                <div>
-                                    <input id="options-savecssimagesall" type="checkbox"/><label for="options-savecssimagesall">CSS images (all)</label>
-                                </div>
-                                <div>
-                                    <input id="options-savecssfontswoff" type="checkbox"/><label for="options-savecssfontswoff">CSS fonts (woff for any browser)</label>
-                                </div>
-                                <div>
-                                    <input id="options-savescripts" type="checkbox"/><label for="options-savescripts">Scripts</label>
-                                </div>
-                            </fieldset>
-                        </form>
-                        
-                        <form>
-                            <fieldset>
-                                <legend>&nbsp;Save Constraints&nbsp;</legend>
-                                <div>
-                                    <input id="options-maxframedepth" type="number" min="0" max="10" value="0"/><label for="options-maxframedepth">Maximum depth of saved nested frames</label>
-                                </div>
-                                <div>
-                                    <input id="options-maxresourcesize" type="number" min="0" max="200" value="50"/><label for="options-maxresourcesize">Maximum size allowed for a resource (MB)</label>
-                                </div>
-                            </fieldset>
-                        </form>
-                        
-                    </div>
-                    
-                </div>
-                
-                <div id="options-save">
-                    <button id="options-save-button">Save</button>
-                    <span id="options-save-status">Saved</span>
-                </div>
-                
+              <input id="options-autosave" type="checkbox"/><label for="options-autosave">Automatically index pages</label>
             </div>
-            
-        </div>
+            <div>
+              <input id="options-httpsalso"
+                     type="checkbox"/><label for="options-httpalso">Also do it for pages with secure content (https)</label>
+            </div>
+          </fieldset>
+        </form>
         
-    </body>
+        <form>
+          <fieldset>
+            <legend>&nbsp;User Interface&nbsp;</legend>
+            <div>
+              <input id="options-showsubmenu" type="checkbox"/><label for="options-showsubmenu">Show add-on submenu on context menu</label>
+            </div>
+            <div>
+              <input id="options-notify" type="checkbox"/><label for="options-notify">Notify when saving</label>
+            </div>
+          </fieldset>
+        </form>
+        
+      </div>
+      
+      <div id="options-save">
+        <button id="options-save-button">Save</button>
+        <span id="options-save-status">Saved</span>
+      </div>
+      
+    </div>
     
+  </body>
+  
 </html>
