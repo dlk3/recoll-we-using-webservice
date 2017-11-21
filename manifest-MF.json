@@ -1,0 +1,27 @@
+{
+    "manifest_version": 2,
+    "name": "Save to Recoll",
+    "version": "1.0",
+    
+    "description": "Enqueue a WEB page for storage and indexing by Recoll.",
+    "icons": { "16": "icon16.png", "32": "icon32.png", "48": "icon48.png",
+               "128": "icon128-96.png" },
+    
+    "applications": { "gecko": { "id": "recollwebex@recoll.org",
+                                 "strict_min_version": "51.0" } },
+    "permissions": [ "activeTab", "tabs", "webNavigation", "contextMenus",
+                     "notifications", "storage", "downloads" ],
+    
+    "browser_action": { "default_icon": { "16": "icon16.png" },
+                        "default_title": "Save to Recoll" },
+    
+    "background": { "scripts": [ "background.js" ] },
+    "content_scripts": [
+        {"matches": ["*://*/*"], "js": ["content.js"]}
+        ],
+
+    "options_ui": {"page": "options.html", "open_in_tab": true},
+    "commands": { "_execute_browser_action":
+                  { "description": "Save Page",
+                    "suggested_key": { "default": "Alt+A" } } }
+}
