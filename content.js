@@ -21,6 +21,12 @@ var isFirefox;
 var menuAction;
 var autosave;
 var httpsalso;
+var nomatchsave;
+var conflictsave;
+var urlRules = {
+    inc: [],
+    exc: []
+};
 
 var htmlStrings = new Array();
 
@@ -32,11 +38,30 @@ chrome.storage.local.get(
         isFirefox = object["environment-isfirefox"];
     
         /* Load options */
-        autosave = object["options-autosave"];
-        httpsalso = object["options-httpsalso"];
+        loadOptions(object);
         
         addListeners();
-});
+    });
+
+function loadOptions(object)
+{
+    autosave = object["options-autosave"];
+    httpsalso = object["options-httpsalso"];
+    nomatchsave = object["options-nomatch-dosave"],
+    conflictsave = object["options-conflict-dosave"];
+
+    var keys = ["options-url-include", "options-url-exclude"];
+    var sks = ["inc", "exc"];
+    for (var t = 0; t < 2; t++) {
+        var key = keys[t];
+        var sk = sks[t];
+        if (key in object) {
+            for (var i = 0; i < object[key].length; i++) {
+                urlRules[sk].push(object[key][i]);
+            }
+        }
+    }
+}
 
 /* Add listeners */
 
@@ -58,15 +83,9 @@ function addListeners()
     
     /* Storage changed listener */
     chrome.storage.onChanged.addListener(
-    function(changes,areaName)
-    {
-        chrome.storage.local.get(null,
-        function(object)
-        {
-            autosave = object["options-autosave"];
-            httpsalso = object["options-httpsalso"];
+        function(changes,areaName) {
+            chrome.storage.local.get(null, loadOptions);
         });
-    });
     
     /* Message received listener */
     chrome.runtime.onMessage.addListener(
@@ -113,12 +132,38 @@ function addListeners()
     });
 }
 
+/* This is called when we receive a message from the background page,
+   initiated by a button or context menu choice */
 function performAction(srcurl)
 {
     if (menuAction == 0) {
         /* Save page */
         htmlStrings.length = 0;
         doSave();
+    } else if (menuAction == 1 || menuAction == 2) {
+        var hostname = location.hostname;
+        var sk, key;
+        if (menuAction == 1) {
+            sk = 'inc';
+            key = 'options-url-include';
+        } else {
+            sk = 'exc';
+            key = 'options-url-exclude';
+        }
+        /* Already there ? */
+        for (var i = 0; i < urlRules[sk].length; i++) {
+            if (urlRules[sk][i][1] == hostname &&
+                urlRules[sk][i][2] == 'domain') {
+                return;
+            }
+        }
+        var rule = ['ca_'+ hostname, hostname, 'domain'];
+        urlRules[sk].push(rule);
+        console.log("Calling storage.local.set. key " + key + " value "
+                    + urlRules[sk]);
+        var obj = {};
+        obj[key] = urlRules[sk];
+        chrome.storage.local.set(obj);
     }
 }
 
@@ -164,17 +209,17 @@ function maybeSave()
        So we just need to check the url against the selection/exclusion lists.
     */
 
-    var lists = ['recoll.exclude.list', 'recoll.include.list'];
+    var sks = ['exc', 'inc'];
     var flags = [false, false];
     var hostname = location.hostname;
     var href = location.href;
     for(var j = 0; j < 2; j++) {
-        var list = JSON.parse(prefObject[lists[j]]);
-        var len = list.length;
+        var sk = sks[j];
         var flag = false;
-        for(var i = 0; i < len && !flag; i++) {
-            var lpattern = list[i]['pattern'];
-            switch(list[i]['patternType']) {
+        for(var i = 0; i < urlRules[sk].length && !flag; i++) {
+            var lpattern = urlRules[sk][i][1];
+            var ptype = urlRules[sk][i][2];
+            switch (ptype) {
             case 'domain':
                 // www.google.com matched by google.com and .com
                 // www.agoogle.com not matched by google.com but matched by com
@@ -200,24 +245,31 @@ function maybeSave()
                             "] -> " + flag);
                 break;
             default:
-                this.debuglog("invalid rule" + list[i]);
-                // something wrong;
+                console.log("Invalid " + sk + " rule " + urlRules[sk][i]);
                 break;
             }
         }
         flags[j] = flag;
     }
-    console.log("Should Index ? Exclude list match: " + flags[0] + 
+    console.log("maybeSave ? Exclude list match: " + flags[0] + 
                 ". Include list match: " + flags[1]);
 
+    /* If both lists are empty, save by default, even if nomatchsave
+       is not set: the user did not bother to set rules, let the
+       autosave variable decide */
     // flags[0]: exclude. flags[1]: include
-    if(!flags[0] && !flags[1])
-        return prefObject['recoll.default.action'] == 1;
-    if(flags[0] && flags[1])
-        return prefObject['recoll.conflict.action'] == 1;
-    return flags[1];
+    if (urlRules['inc'].length == 0 && urlRules['exc'].length == 0) {
+        flags[1] = true;
+    } else {
+        if (!flags[0] && !flags[1])
+            flags[1] = nomatchsave;
+        if(flags[0] && flags[1])
+            flags[1] = conflictsave;
+    }
 
-    doSave();
+    if (flags[1]) {
+        doSave();
+    }
 }
 
 /* Return the content base file name for a given URL */

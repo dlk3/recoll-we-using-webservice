@@ -45,7 +45,10 @@ function initialize()
     {
         var context;
         var opt;
-        
+
+        for (var key in object) {
+            console.log("INIT: " + key + " => " + object[key]);
+        }
         /* Initialize or migrate options */
         var opdefaults = {"options-showsubmenu": true,
                           "options-autosave": true,

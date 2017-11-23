@@ -22,8 +22,6 @@ var urlRules = {
     exc: []
 };
 
-var urlExcludeRules = [];
-
 function onLoadPage(event)
 {
     /* Load options from local storage */
@@ -34,9 +32,10 @@ function onLoadPage(event)
         var checkboxes = ["options-autosave",
                           "options-showsubmenu",
                           "options-httpsalso", 
-                          "options-notify"];
+                          "options-notify",
+                          "options-nomatch-dosave",
+                          "options-conflict-dosave"];
         for (i = 0; i < checkboxes.length; i++) {
-            console.log(checkboxes[i] + " will be " + object[checkboxes[i]]);
             document.getElementById(checkboxes[i]).checked =
                 object[checkboxes[i]];
         }
@@ -189,17 +188,8 @@ function onClickSave(event)
         opts[checkboxnames[i]] =
             document.getElementById(checkboxnames[i]).checked;
     }
-    var keys = ["options-url-include", "options-url-exclude"];
-    var sks = ["inc", "exc"];
-    for (t = 0; t < 2; t++) {
-        var key = keys[t];
-        var sk = sks[t];
-        opts[key] = [];
-        for (i = 0; i < urlRules[sk].length; i++) {
-            opts[key].push(urlRules[sk][i]);
-        }
-    }
-    
+    opts["options-url-include"] = urlRules["inc"];
+    opts["options-url-exclude"] = urlRules["exc"];
     chrome.storage.local.set(opts);
     
     /* Display saved status for short period */
