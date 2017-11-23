@@ -34,7 +34,7 @@
       
       #options
       {
-      width: 337px;
+      width: 600px;
       margin: auto;
       padding: 5px;
       border: 1px solid #808080;
@@ -61,7 +61,36 @@
       padding: 1px 1px 1px 2px;
       border: 1px solid #C0C0C0;
       }
+
+      table
+      {
+      margin: 0px 3px 4px 2px;
+      padding: 1px 1px 1px 2px;
+      width: 100%;
+      border-collapse: collapse;
+      }
+      table, th, td
+      {
+      border: 1px solid #C0C0C0;
+      }
+      th
+      {
+      height: 20px;
+      }
+      caption
+      {
+      font-weight: bold;
+      }
       
+      #include-button-delete, #exclude-button-delete
+      {
+      margin-bottom: 10px;
+      }
+      #include-table-add
+      {
+      margin-bottom: 30px;
+      }
+
       #options-tabbar button
       {
       display: inline-block;
@@ -184,7 +213,7 @@
         
         <div id="options-title">Recoll Options</div>
         
-        <form id="options-autosave">
+        <form id="options-auto">
           <fieldset>
             <legend>&nbsp;Automatic Action&nbsp;</legend>
             <div>
@@ -194,6 +223,66 @@
               <input id="options-httpsalso"
                      type="checkbox"/><label for="options-httpalso">Also do it for pages with secure content (https)</label>
             </div>
+          </fieldset>
+        </form>
+
+        <form id="options-url">
+          <fieldset>
+            <legend>&nbsp;URL selection&nbsp;</legend>
+            <div>
+              <input id="options-conflict-dosave"
+              type="checkbox"/><label for="options-conflict-dosave">Save
+                when both rules sets match</label>
+            </div>
+            <div>
+              <input id="options-nomatch-dosave"
+              type="checkbox"/><label for="options-nomatch-dosave">Save
+                when no rules set match</label>
+            </div>
+
+            <table id="options-url-include">
+            </table>
+
+            <button id="include-button-delete">Delete selected</button>
+
+            <table id="include-table-add">
+              <tr><th>Name</th><th>Pattern</th><th>Pattern Type</th></tr>
+              <tr>
+                <td><input id="include-input-name" type="text"></td>
+                <td><input id="include-input-value" type="text"></td>
+                <td>
+                  <select id="include-select-type">
+                    <option value="domain">Domain</option>
+                    <option value="wildcard">Wildcard</option>
+                    <option value="regexp">RegExp</option>
+                  </select>
+                </td>
+                <td><button id="include-button-add">Add</button></td>
+              </tr>
+            </table>
+
+            
+            <table id="options-url-exclude">
+            </table>
+            <button id="exclude-button-delete">Delete selected</button>
+
+            <table id="exclude-table-add">
+              <tr><th>Name</th><th>Pattern</th><th>Pattern Type</th></tr>
+              <tr>
+                <td><input id="exclude-input-name" type="text"></td>
+                <td><input id="exclude-input-value" type="text"></td>
+                <td>
+                  <select id="exclude-select-type">
+                    <option value="domain">Domain</option>
+                    <option value="wildcard">Wildcard</option>
+                    <option value="regexp">RegExp</option>
+                  </select>
+                </td>
+                <td><button id="exclude-button-add">Add</button></td>
+              </tr>
+            </table>
+
+
           </fieldset>
         </form>
         

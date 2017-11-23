@@ -17,7 +17,7 @@
     
     "background": { "scripts": [ "background.js" ] },
     "content_scripts": [
-        {"matches": ["*://*/*"], "js": ["content.js"]}
+        {"matches": ["*://*/*"], "js": ["content.js", "md5.js"]}
         ],
 
     "options_ui": {"page": "options.html", "open_in_tab": true},
