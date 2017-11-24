@@ -32,7 +32,6 @@ function onLoadPage(event)
         var checkboxes = ["options-autosave",
                           "options-showsubmenu",
                           "options-httpsalso", 
-                          "options-notify",
                           "options-nomatch-dosave",
                           "options-conflict-dosave"];
         for (i = 0; i < checkboxes.length; i++) {
@@ -179,8 +178,7 @@ function onClickSave(event)
 {
     var checkboxnames = ["options-autosave",
                          "options-showsubmenu",
-                         "options-httpsalso", 
-                         "options-notify"];
+                         "options-httpsalso"];
     var i, t;
     var opts = {};
     

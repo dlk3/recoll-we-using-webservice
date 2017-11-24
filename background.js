@@ -53,7 +53,6 @@ function initialize()
         var opdefaults = {"options-showsubmenu": true,
                           "options-autosave": true,
                           "options-httpsalso": true,
-                          "options-notify": false,
                           "options-default-save": true,
                           "options-conflict-save": true
                          };
@@ -176,9 +175,11 @@ function addListeners()
         {
             case "downloadFile":
             {
-                console.log("SAVEPAGE: Downloading " + message.location + " to " + message.filename);
-                var downloading =  browser.downloads.download({filename: message.filename, url: message.location, saveAs: false });
-                downloading.then(function() {console.log("Download started");}, function(reason) {console.log(reason);});
+                var downloading =  browser.downloads.download(
+                    {filename: message.filename,
+                     url: message.location, saveAs: false });
+                downloading.then(null, function(reason) {
+                    console.log("Download failed: " + reason);});
             }
             break;
             
@@ -289,6 +290,7 @@ function setButtonAndMenuStates(tabId,url)
 
 function setSaveBadge(text, color)
 {
+    /*console.log("setSaveBadge: text [" + text + "] color " + color);*/
     chrome.browserAction.setBadgeText({tabId: badgeTabId, text: text});
     chrome.browserAction.setBadgeBackgroundColor({tabId: badgeTabId,
                                                   color: color});
@@ -298,6 +300,6 @@ function alertNotify(message)
 {
     chrome.notifications.create(
         "alert",
-        {type: "basic", iconUrl: "icon32.png", title: "SAVE PAGE WE",
+        {type: "basic", iconUrl: "icon32.png", title: "Recoll-WE",
          message: "" + message });
 }

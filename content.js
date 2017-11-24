@@ -70,9 +70,7 @@ function addListeners()
     window.addEventListener(
         "load",
         function(event) {
-            console.log("SAVEPAGE: document.readyState " + document.readyState);
             if (document.readyState == "complete") {
-                console.log("SAVEPAGE: protocol " + document.location.protocol);
                 if (autosave &&
                     (document.location.protocol == "http:" ||
                      (httpsalso && document.location.protocol == "https:"))) {
@@ -159,8 +157,8 @@ function performAction(srcurl)
         }
         var rule = ['ca_'+ hostname, hostname, 'domain'];
         urlRules[sk].push(rule);
-        console.log("Calling storage.local.set. key " + key + " value "
-                    + urlRules[sk]);
+        /*console.log("Url rules: key: " + key + " new value: "
+          + urlRules[sk]);*/
         var obj = {};
         obj[key] = urlRules[sk];
         chrome.storage.local.set(obj);
@@ -200,8 +198,8 @@ function maybeSave()
 {
     var location = document.location;
     
-    console.log("SAVEPAGE: maybeSave. mtype " + document.contentType +
-                " url " + document.location.href);
+    /*console.log("SAVEPAGE: maybeSave. mtype " + document.contentType +
+                " url " + document.location.href);*/
 
     /* We are only called from the automatic save after load situation, and 
        the protocol (http or https), and checks against
@@ -275,13 +273,13 @@ function maybeSave()
 /* Return the content base file name for a given URL */
 function getContentName(url)
 {
-    return "recoll-we-c-" + recoll_md5.hex_md5(url);
+    return "recoll-we-c-" + recoll_md5.hex_md5(url) + ".rclwe";
 }
 
 /* Return the metadata base file name path for a given url */
 function getMetaName(url)
 {
-    return "recoll-we-m-" + recoll_md5.hex_md5(url);
+    return "recoll-we-m-" + recoll_md5.hex_md5(url) + ".rclwe";
 }
 
 function metadata(url, contentType, charset)
@@ -308,27 +306,25 @@ function downloadDataThroughLink(data, filename)
     link = document.createElement("a");
     link.download = filename;
     link.href = objURL;
-    console.log("SAVEPAGE: generate link click for filename " + filename +
+    console.log("Recoll: generate link click for filename " + filename +
                 " href " + link.href);
     document.body.appendChild(link);
     link.addEventListener("click", handleClick, true);
     link.click();
     link.removeEventListener("click", handleClick, true);
-    console.log("SAVEPAGE: clicked link");
     window.setTimeout(
         function() {
             document.body.removeChild(link);
             window.URL.revokeObjectURL(objURL);
             chrome.runtime.sendMessage({type: "setSaveBadge",
                                         text: "", color: "#000000" });
-        }, 200);
+        }, 400);
 }
 
 function doSave()
 {
     var i,j,mimetype, filename
 
-    console.log("SAVEPAGE: doSave");
     chrome.runtime.sendMessage({type: "setSaveBadge", text: "SAVE",
                                  color: "#0000E0" });
 
@@ -346,7 +342,7 @@ function doSave()
         downloadDataThroughLink(htmlStrings, filename);
         htmlStrings.length = 0;
     } else {
-        console.log("SAVEPAGE: send download message for " +
+        console.log("Recoll: send download message for " +
                     document.location.href + " filename " + filename);
         filename = getContentName(document.location.href);
         chrome.runtime.sendMessage({type: "downloadFile",
