@@ -161,6 +161,16 @@ function performAction(srcurl)
           + urlRules[sk]);*/
         var obj = {};
         obj[key] = urlRules[sk];
+        if (menuAction == 1) {
+            /* Also set autosave */
+            obj["options-autosave"] = true;
+            if (document.location.protocol == "https:") {
+                obj["options-httpsalso"] = true;
+            }
+            /* Remove the 'save by default' option, otherwise the
+            positive rule makes no sense */
+            obj["options-nomatch-dosave"] = false;
+        }
         chrome.storage.local.set(obj);
     }
 }

@@ -73,7 +73,7 @@ function onLoadPage(event)
 function updateRulesTables()
 {
     var i, t;
-    var caption = "Include rules";
+    var caption = "URL include rules";
     var keys = ["options-url-include", "options-url-exclude"];
     var sks = ["inc", "exc"];
     for (t = 0; t < 2; t++) {
@@ -100,7 +100,7 @@ function updateRulesTables()
         console.log("Elt for key "+key + " is " + document.getElementById(key));
         console.log("html is " + html);
         document.getElementById(key).innerHTML = html;
-        caption = "Exclude rules";
+        caption = "URL exclude rules";
     }
 
     document.getElementById("ckb-inc-all").addEventListener(
@@ -117,6 +117,8 @@ function onClickRuleAdd(key, sk)
     console.log('onClickRuleAdd: urlRules['+ sk +'].push(['+ name + ', ' + val +
                 ', ' + tp + '])')
     urlRules[sk].push([name, val, tp]);
+    /* We have a positive rule: it makes no sense to have save by default */
+    document.getElementById("options-nomatch-dosave").checked = false;
     onClickSave();
 }
 function onClickRuleDelete(sk)
@@ -176,9 +178,12 @@ function onClickAutosave(event)
 /* Save options */
 function onClickSave(event)
 {
-    var checkboxnames = ["options-autosave",
-                         "options-showsubmenu",
-                         "options-httpsalso"];
+    var checkboxnames = ["options-showsubmenu",
+                          "options-autosave",
+                          "options-httpsalso",
+                          "options-nomatch-dosave",
+                          "options-conflict-dosave"
+                        ];
     var i, t;
     var opts = {};
     

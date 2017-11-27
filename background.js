@@ -53,8 +53,8 @@ function initialize()
         var opdefaults = {"options-showsubmenu": true,
                           "options-autosave": true,
                           "options-httpsalso": true,
-                          "options-default-save": true,
-                          "options-conflict-save": true
+                          "options-nomatch-dosave": true,
+                          "options-conflict-dosave": false
                          };
         for (opt in opdefaults) {
             if (!(opt in object)) {
@@ -108,7 +108,6 @@ function addListeners()
             var context;
             
             showSubmenu = object["options-showsubmenu"];
-            
             if ("options-showsubmenu" in changes)
             {
                 context = showSubmenu ? "all" : "browser_action";
