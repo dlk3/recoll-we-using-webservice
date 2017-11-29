@@ -21,6 +21,6 @@
 
     "options_ui": {"page": "options.html", "open_in_tab": true},
     "commands": { "_execute_browser_action":
-                  { "description": "Save Page",
+                  { "description": "Index Page",
                     "suggested_key": { "default": "Alt+A" } } }
 }

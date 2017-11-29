@@ -1,7 +1,7 @@
 /*
  *      RecollWebext - WebExtension - Background Page
  *
- *      A lot of code was copied from or inspired by the savepage-WE
+ *      A lot of code was copied from or inspired by the Save Page WE
  *      extension.
  *
  *      Copyright (C) 2017 jfd@recoll.org
@@ -255,7 +255,7 @@ function setButtonAndMenuStates(tabId,url)
         }        
         chrome.browserAction.setTitle(
             {tabId: tabId,
-             title: "Save Page WE - cannot be used with this page" });
+             title: "Recoll WE - cannot be used with this page" });
         
         chrome.contextMenus.update("indexnow",{enabled: false });
         chrome.contextMenus.update("separator", {enabled: true });
@@ -267,7 +267,7 @@ function setButtonAndMenuStates(tabId,url)
         if (isFirefox && ffVersion <= 54)
             chrome.browserAction.setIcon({ tabId: tabId, path: "icon16.png"});
         
-        chrome.browserAction.setTitle({ tabId: tabId, title: "Save Page WE" });
+        chrome.browserAction.setTitle({ tabId: tabId, title: "Recoll WE" });
         
         chrome.contextMenus.update("indexnow",{enabled: true});
         chrome.contextMenus.update("separator", {enabled: true});
@@ -279,7 +279,7 @@ function setButtonAndMenuStates(tabId,url)
         if (isFirefox && ffVersion <= 54)
             chrome.browserAction.setIcon({ tabId: tabId, path: "icon16.png"});
         
-        chrome.browserAction.setTitle({ tabId: tabId, title: "Save Page WE" });
+        chrome.browserAction.setTitle({ tabId: tabId, title: "Recoll WE" });
         chrome.contextMenus.update("indexnow",{enabled: true});
         chrome.contextMenus.update("separator", {enabled: true});
         chrome.contextMenus.update("sitealways",{enabled: true});

@@ -1,7 +1,7 @@
 /*
  *      RecollWebext - WebExtension - Background Page
  *
- *      A lot of code was copied from or inspired by the savepage-WE
+ *      A lot of code was copied from or inspired by the Save Page WE
  *      extension.
  *
  *      Copyright (C) 2017 jfd@recoll.org
@@ -218,8 +218,8 @@ function maybeSave()
 {
     var location = document.location;
     
-    /*console.log("SAVEPAGE: maybeSave. mtype " + document.contentType +
-                " url " + document.location.href);*/
+    /*console.log("maybeSave. mtype " + document.contentType +
+      " url " + document.location.href);*/
 
     /* We are only called from the automatic save after load situation, and 
        the protocol (http or https), and checks against

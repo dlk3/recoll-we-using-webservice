@@ -1,7 +1,7 @@
 /*
  *      RecollWebext - WebExtension - Options page
  *
- *      A lot of code was copied from or inspired by the savepage-WE
+ *      A lot of code was copied from or inspired by the Save Page WE
  *      extension.
  *
  *      Copyright (C) 2017 jfd@recoll.org
