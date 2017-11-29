@@ -47,7 +47,7 @@ function initialize()
         var opt;
 
         for (var key in object) {
-            console.log("INIT: " + key + " => " + object[key]);
+            console.log("Background init: " + key + " => " + object[key]);
         }
         /* Initialize or migrate options */
         var opdefaults = {"options-showsubmenu": true,

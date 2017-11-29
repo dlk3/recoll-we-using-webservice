@@ -45,6 +45,9 @@ chrome.storage.local.get(
 
 function loadOptions(object)
 {
+    /* for (var key in object) {
+        console.log("Content init: " + key + " => " + object[key]);
+    }*/
     autosave = object["options-autosave"];
     httpsalso = object["options-httpsalso"];
     nomatchsave = object["options-nomatch-dosave"],
@@ -87,47 +90,54 @@ function addListeners()
     
     /* Message received listener */
     chrome.runtime.onMessage.addListener(
-        function(message,sender,sendResponse)
-        {
+        function(message,sender,sendResponse) {
             var panel;
         
-        switch (message.type) {
-            /* Messages from background page */
+            switch (message.type) {
+                /* Messages from background page */
             case "performAction":
-            /* to confirm content script has been loaded */
-            sendResponse({ });
+                /* to confirm content script has been loaded */
+                sendResponse({ });
                 
-            menuAction = message.menuaction;
+                menuAction = message.menuaction;
                 
-            /* Wait for page to complete loading */
-            if (document.readyState == "complete") {
-                window.setTimeout(
-                    function()
-                    {
-                        performAction(message.srcurl);
-                    }, 50);
+                /* Wait for page to complete loading */
+                if (document.readyState == "complete") {
+                    window.setTimeout(
+                        function() {
+                            performAction(message.srcurl);
+                        }, 50);
                 } else {
                     window.addEventListener(
                         "load",
-                        function(event)
-                        {
+                        function(event) {
                             if (document.readyState == "complete")
                                 performAction(message.srcurl);
                         }, false);
                 }
-                
                 break;
                 
             case "loadSuccess":
-            loadSuccess(message.index, message.content,
-                        message.contenttype, message.alloworigin);
-            break;
+                loadSuccess(message.index, message.content,
+                            message.contenttype, message.alloworigin);
+                break;
                 
             case "loadFailure":
-            loadFailure(message.index);
-            break;
+                loadFailure(message.index);
+                break;
+            }
+        });
+
+    /* Maybe addListeners() was called after doc complete. In which
+     * case we will never have the "load" event. This happens with
+     * "Open in new tab" for some reason. Initiate save at once. */
+    if (document.readyState == "complete") {
+        if (autosave &&
+            (document.location.protocol == "http:" ||
+             (httpsalso && document.location.protocol == "https:"))) {
+            maybeSave();
         }
-    });
+    }
 }
 
 /* This is called when we receive a message from the background page,
@@ -328,7 +338,7 @@ function downloadDataThroughLink(data, filename)
             window.URL.revokeObjectURL(objURL);
             chrome.runtime.sendMessage({type: "setSaveBadge",
                                         text: "", color: "#000000" });
-        }, 400);
+        }, 1000);
 }
 
 function doSave()
