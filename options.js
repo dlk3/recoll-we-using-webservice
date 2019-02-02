@@ -69,23 +69,34 @@ function onLoadPage(event)
 
     document.removeEventListener("DOMContentLoaded", onLoadPage, false);
 }
+function prettyDOM(node, indent = 0) {
+  let str = '';
+  if (node) {
+    str += ' '.repeat(indent) + (node.tagName || node.textContent) + '\n';
+    for (let child of node.childNodes) {
+      str += prettyDOM(child, indent + 2);
+    }
+  }
+  return str;
+}
 
 function updateRulesTables()
 {
-    var i, t;
-    var caption = "URL include rules";
     var keys = ["options-url-include", "options-url-exclude"];
     var sks = ["inc", "exc"];
-    for (t = 0; t < 2; t++) {
+
+    /* Build the 2 tables for included and excluded patterns */
+    var caption = "URL include rules";
+    for (let t = 0; t < 2; t++) {
         var key = keys[t];
         var sk = sks[t];
-        var html = '<caption>' + caption + '</caption>\n' +
-            '<tr><th>' + 
+        var html = '<table><caption>' + caption + '</caption>\n' +
+            '<tr><th style="text-align:left">' + 
             '<input id="ckb-' + sk + '-all" type="checkbox"/>' +
             '</th><th>Name</th><th>Pattern</th>' +
             '<th>PatternType</th></tr>';
-        for (i = 0; i < urlRules[sk].length; i++) {
-            html += '<tr><td>'+
+        for (let i = 0; i < urlRules[sk].length; i++) {
+            html += '<tr><td style="text-align:left">'+
                 '<input id="ckb-' + sk + '-' + i + '" type="checkbox"/>' +
                 '</td>';
             html += '<td>' + urlRules[sk][i][0] + '</td>';
@@ -97,9 +108,20 @@ function updateRulesTables()
                 '<input id="ckb-' + sk + '-0" type="checkbox"/></td>';
             html += '<td> </td><td> </td><td> </td></tr>';
         }
-        console.log("Elt for key "+key + " is " + document.getElementById(key));
-        console.log("html is " + html);
-        document.getElementById(key).innerHTML = html;
+        html = html + '</table>';
+
+        /* Avoid "unsafe assign to innerHTML by doing complicated stuff */
+        let elt = document.getElementById(key);
+        elt.innerHTML = '';
+        const parser = new DOMParser();
+        const parsed = parser.parseFromString(html, 'text/html');
+        /*console.log("PARSED TREE: " + prettyDOM(parsed));*/
+        const tags = parsed.getElementsByTagName('table');
+        for (const tag of tags) {
+            /*console.log("Appendchild" + tag.innerHTML);*/
+            elt.appendChild(tag);
+        }
+        
         caption = "URL exclude rules";
     }
 
