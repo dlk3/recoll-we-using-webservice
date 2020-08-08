@@ -28,8 +28,6 @@ var urlRules = {
     exc: []
 };
 
-var htmlStrings = new Array();
-
 /* Initialize on script load */
 chrome.storage.local.get(
     null,
@@ -146,7 +144,6 @@ function performAction(srcurl)
 {
     if (menuAction == 0) {
         /* Save page */
-        htmlStrings.length = 0;
         doSave();
     } else if (menuAction == 1 || menuAction == 2) {
         var hostname = location.hostname;
@@ -313,60 +310,36 @@ function metadata(url, contentType, charset)
     return meta;
 }
 
-function downloadDataThroughLink(data, filename)
-{
-    function handleClick(event)
-    {
-        event.stopPropagation();
-    }
-
-    let blob = new Blob(data, {type: "text/x-recoll-data"});
-    let objURL = window.URL.createObjectURL(blob);
-    let link = document.createElement("a");
-    link.download = filename;
-    link.href = objURL;
-    console.log("Recoll: generate link click for filename " + filename +
-                " href " + link.href);
-    document.body.appendChild(link);
-    link.addEventListener("click", handleClick, true);
-    link.click();
-    link.removeEventListener("click", handleClick, true);
-    window.setTimeout(
-        function() {
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(objURL);
-            chrome.runtime.sendMessage({type: "setSaveBadge",
-                                        text: "", color: "#000000" });
-        }, 2000);
-}
-
 function doSave()
 {
     chrome.runtime.sendMessage({type: "setSaveBadge", text: "SAVE",
-                                 color: "#0000E0" });
+                                color: "#0000E0" });
 
-    /* Save metadata to file using HTML5 download attribute */
-    let meta = metadata(document.location.href, document.contentType,
+    /* Save metadata */
+    var meta = metadata(document.location.href, document.contentType,
                         document.characterSet);
-    let filename = getMetaName(document.location.href);
-    downloadDataThroughLink(meta, filename);
-
-    window.setTimeout(
-        function() {
-            if(document.contentType.match(/(text|html|xml)/i)) {
-                /* Save data to file using HTML5 download attribute */
-                htmlStrings.length = 0;
-                htmlStrings[0] = document.documentElement.outerHTML;
-                filename = getContentName(document.location.href);
-                downloadDataThroughLink(htmlStrings, filename);
-                htmlStrings.length = 0;
-            } else {
-                console.log("Recoll: send download message for " +
-                            document.location.href + " filename " + filename);
-                filename = getContentName(document.location.href);
-                chrome.runtime.sendMessage({type: "downloadFile",
-                                            location: document.location.href,
-                                            filename: filename });
-            }
-        }, 100);
+    var mfn = getMetaName(document.location.href);
+    console.log("Recoll: send download message for " +
+                document.location.href + " filename " + mfn);
+    chrome.runtime.sendMessage({type: "downloadFile",
+                                location: document.location.href,
+                                filename: mfn,
+                                data: meta,
+                               });
+    /* Save data */
+    var data = "";
+    var dfn = "";
+    if (document.contentType.match(/(text|html|xml)/i)) {
+        data = document.documentElement.outerHTML;
+        dfn = getContentName(document.location.href);
+    } else {
+        dfn = getContentName(document.location.href);
+    }
+    console.log("Recoll: send download message for " +
+                document.location.href + " filename " + dfn);
+    chrome.runtime.sendMessage({type: "downloadFile",
+                                location: document.location.href,
+                                filename: dfn,
+                                data: data,
+                               });
 }

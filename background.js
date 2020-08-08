@@ -166,19 +166,32 @@ function addListeners()
     chrome.runtime.onMessage.addListener(
     function(message,sender,sendResponse)
     {
-        var xhr = new Object();
-        
         /* Messages from content script */
         
         switch (message.type)
         {
             case "downloadFile":
             {
-                var downloading =  browser.downloads.download(
-                    {filename: message.filename,
-                     url: message.location, saveAs: false });
-                downloading.then(null, function(reason) {
-                    console.log("Download failed: " + reason);});
+                console.log("downloadFile: filename " +  message.filename);
+                if (message.data) {
+                    console.log('downloadFile: got data');
+                    let blob = new Blob([message.data], {type: "text/x-recoll-data"});
+                    location = URL.createObjectURL(blob);
+                } else {
+                    location = message.location;
+                }
+                var downloading =  browser.downloads.download({
+                    url : location,
+                    filename : message.filename,
+                    saveAs : false,
+                    conflictAction : 'overwrite'});
+                /* setSaveBadge("", "#000000");*/
+                downloading.then(
+                    null,
+                    function(reason) {
+                        console.log("Download failed: " + reason);
+                    }
+                );
             }
             break;
             
