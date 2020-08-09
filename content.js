@@ -319,8 +319,6 @@ function doSave()
     var meta = metadata(document.location.href, document.contentType,
                         document.characterSet);
     var mfn = getMetaName(document.location.href);
-    console.log("Recoll: send download message for " +
-                document.location.href + " filename " + mfn);
     chrome.runtime.sendMessage({type: "downloadFile",
                                 location: document.location.href,
                                 filename: mfn,
@@ -335,8 +333,6 @@ function doSave()
     } else {
         dfn = getContentName(document.location.href);
     }
-    console.log("Recoll: send download message for " +
-                document.location.href + " filename " + dfn);
     chrome.runtime.sendMessage({type: "downloadFile",
                                 location: document.location.href,
                                 filename: dfn,

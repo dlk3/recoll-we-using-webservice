@@ -163,43 +163,100 @@ function addListeners()
     });
     
     /* Message received listener */
-    chrome.runtime.onMessage.addListener(
-    function(message,sender,sendResponse)
-    {
-        /* Messages from content script */
-        
-        switch (message.type)
-        {
-            case "downloadFile":
-            {
-                console.log("downloadFile: filename " +  message.filename);
-                if (message.data) {
-                    console.log('downloadFile: got data');
-                    let blob = new Blob([message.data], {type: "text/x-recoll-data"});
-                    location = URL.createObjectURL(blob);
-                } else {
-                    location = message.location;
-                }
-                var downloading =  browser.downloads.download({
-                    url : location,
-                    filename : message.filename,
-                    saveAs : false,
-                    conflictAction : 'overwrite'});
-                /* setSaveBadge("", "#000000");*/
-                downloading.then(
-                    null,
-                    function(reason) {
-                        console.log("Download failed: " + reason);
-                    }
-                );
-            }
+    chrome.runtime.onMessage.addListener(runAction);
+}
+
+async function runAction(message)
+{
+    let result = {
+        ok: false,
+    };
+    try {
+        switch (message.type) {
+        case "downloadFile":
+            result.ok = await doDownload(message.data, message.location,
+                                         message.filename);
+            setSaveBadge("", "#000000");
             break;
             
-            case "setSaveBadge":
+        case "setSaveBadge":
             setSaveBadge(message.text,message.color);
             break;
         }
-    });
+    } catch (e) {
+        result.error = '[RCLWE] ' + String(e);
+        console.error(result.error);
+    }
+    return result;
+}
+
+async function doDownload(data, location, filename)
+{
+    /*console.log("doDownload: filename "+filename+" location "+location); */
+    var blob = null;
+    if (data) {
+        blob = new Blob([data], {type: "text/x-recoll-data"});
+        location = URL.createObjectURL(blob);
+    }
+
+    try {
+        let id =  await browser.downloads.download({
+            filename : filename,
+            url : location,
+            saveAs : false,
+            conflictAction : browser.downloads.FilenameConflictAction.OVERWRITE,
+        });
+
+        /*console.log("doDownload: downloads.download returned ", {id});*/
+
+        let {state, error} = await waitDownload(id);
+
+        if (!state) {
+            state = browser.downloads.State.INTERRUPTED;
+            error = `Download ID not found, id: ${id}`;
+        }
+
+        if (error) {
+            error = `Error save file:\n${filename}\nerror: ${error}`;
+        }
+
+        if (browser.downloads.State.COMPLETE === state) {
+        } else {
+            throw error;
+        }
+
+        return id;
+    } catch (e) {
+        e = String(e);
+        console.error(e);
+    } finally {
+        if (blob) {
+            URL.revokeObjectURL(location);
+        }
+    }
+
+}
+
+function mswait(ms = 200) {
+    return new Promise(resolve => setTimeout(resolve, ms, ms));
+}
+
+async function waitDownload(id, maxWaitSec = 2) {
+    
+    let downloadObj = null;
+
+    for (let i = 0; i < maxWaitSec * 5; i++) {
+        await mswait(200);
+        [downloadObj] = await browser.downloads.search({id});
+
+        if (downloadObj
+            && browser.downloads.State.IN_PROGRESS !== downloadObj.state) {
+            break;
+        }
+
+    }
+
+    return downloadObj || {};
 }
 
 function initiateAction(tab, menuaction, srcurl)
