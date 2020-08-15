@@ -301,12 +301,10 @@ function getMetaName(url)
 
 function metadata(url, contentType, charset)
 {
-    var meta = [
-        url + "\n",
-        "WebHistory\n",
-        contentType + "\n",
-        "k:_unindexed:encoding=" + charset + "\n"
-    ];
+    var meta = url + "\n" +
+        "WebHistory\n" +
+        contentType + "\n" +
+        "k:_unindexed:encoding=" + charset + "\n";
     return meta;
 }
 
