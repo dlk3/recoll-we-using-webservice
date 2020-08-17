@@ -54,7 +54,8 @@ function initialize()
                           "options-autosave": true,
                           "options-httpsalso": true,
                           "options-nomatch-dosave": true,
-                          "options-conflict-dosave": false
+                          "options-conflict-dosave": false,
+                          "options-downloadsubdir": ""
                          };
         for (opt in opdefaults) {
             if (!(opt in object)) {

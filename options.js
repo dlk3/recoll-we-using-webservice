@@ -38,6 +38,13 @@ function onLoadPage(event)
             document.getElementById(checkboxes[i]).checked =
                 object[checkboxes[i]];
         }
+
+        let dldsbd = "";
+        if ("options-downloadsubdir" in object) {
+            dldsbd = object["options-downloadsubdir"];
+        }
+        document.getElementById("options-downloadsubdir").value = dldsbd;
+        
         var keys = ["options-url-include", "options-url-exclude"];
         var sks = ["inc", "exc"];
         for (t = 0; t < 2; t++) {
@@ -215,6 +222,8 @@ function onClickSave(event)
     }
     opts["options-url-include"] = urlRules["inc"];
     opts["options-url-exclude"] = urlRules["exc"];
+    opts["options-downloadsubdir"] =
+        document.getElementById("options-downloadsubdir").value;
     chrome.storage.local.set(opts);
     
     /* Display saved status for short period */

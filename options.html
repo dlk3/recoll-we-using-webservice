@@ -6,7 +6,7 @@
 
     <!--
         /*
-        *      RecollWebext - WebExtension - Options Page
+        *      Recoll WE - WebExtension - Options Page
         *
         *      A lot of code was copied from or inspired by the Save Page WE
         *      extension.
@@ -19,7 +19,7 @@
         */
       -->
 
-    <title>RecollWebext Options</title>
+    <title>Recoll WE Options</title>
     
     <script src="options.js"></script>
     
@@ -211,17 +211,38 @@
       
       <div>
         
-        <div id="options-title">Recoll Options</div>
+        <div id="options-title">Recoll WE Options</div>
         
+        <form id="options-dlsubd">
+          <fieldset>
+            <legend>&nbsp;Download subdirectory&nbsp;</legend>
+            <div>
+              <input id="options-downloadsubdir" type="text"/>
+              <p>&nbsp;Subdirectory of the browser
+                <b>Downloads</b> location where we store temporary page
+                copies (e.g. <span style="white-space:
+                nowrap;"><i>recoll-we</i></span>).</br> 
+                This is empty by default. If you set a value, you will
+                also need to set the <b>webdownloadsdir</b> recoll
+                configuration variable to the full location path.<br/>
+                In recoll.conf, e.g.: <span style="white-space:nowrap;">
+                  <i>webdownloadsdir=/home/mylogin/Downloads/recoll-we</i>.
+            </span></p></div>
+          </fieldset>
+        </form>
+
         <form id="options-auto">
           <fieldset>
             <legend>&nbsp;Automatic Action&nbsp;</legend>
             <div>
-              <input id="options-autosave" type="checkbox"/><label for="options-autosave">Automatically index pages</label>
+              <input id="options-autosave"
+              type="checkbox"/><label for="options-autosave">Automatically
+              index pages</label> 
             </div>
             <div>
               <input id="options-httpsalso"
-                     type="checkbox"/><label for="options-httpalso">Also do it for pages with secure content (https)</label>
+                     type="checkbox"/><label for="options-httpalso">Also do
+                     it for pages with secure content (https)</label> 
             </div>
           </fieldset>
         </form>
