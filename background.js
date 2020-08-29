@@ -211,9 +211,9 @@ async function doDownload(data, location, filename)
         /*console.log("doDownload: downloads.download returned ", {id});*/
         var state;
         var error;
-        while (browser.downloads.State.IN_PROGRESS === state) {
+        do {
             state, error = await waitDownload(id);
-        };
+        } while (browser.downloads.State.IN_PROGRESS === state);
 
         if (!state) {
             state = browser.downloads.State.INTERRUPTED;
