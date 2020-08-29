@@ -50,7 +50,7 @@ function loadOptions(object)
     }*/
     autosave = object["options-autosave"];
     httpsalso = object["options-httpsalso"];
-    nomatchsave = object["options-nomatch-dosave"],
+    nomatchsave = object["options-nomatch-dosave"];
     conflictsave = object["options-conflict-dosave"];
     downloadsubdir = object["options-downloadsubdir"];
     
