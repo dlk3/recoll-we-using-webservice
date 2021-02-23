@@ -218,9 +218,18 @@ function maybeSave()
 {
     var location = document.location;
     
-    /*console.log("maybeSave. mtype " + document.contentType +
-      " url " + document.location.href);*/
+    /* console.log("maybeSave. mtype " + document.contentType +
+       " url " + document.location.href); */
 
+    /* Exclude some MIME types from automatic saving. They can still be saved by an explicit click */
+    var excludedmimes = ["video/*", "audio/*", "image/*", "application/x-shockwave-flash"]
+    for (var x = 0; x < excludedmimes.length; x++) {
+        if (wildcardMatch(excludedmimes[x], document.contentType)) {
+            console.log("recoll-we: " + document.contentType + " is excluded");
+            return;
+        }
+    }
+    
     /* We are only called from the automatic save after load situation, and 
        the protocol (http or https), and checks against
        autosave/httpsalso were performed in the listener.
@@ -257,7 +266,7 @@ function maybeSave()
                 break;
 
             case 'regexp':
-                var re = RegExp(list[i]['pattern']);
+                var re = RegExp(lpattern);
                 flag = (href.match(re) != null)
                 console.log("Regexp match [" + lpattern + "] to [" + href +
                             "] -> " + flag);
