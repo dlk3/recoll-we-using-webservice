@@ -221,10 +221,11 @@
               <p>&nbsp;Subdirectory of the browser <b>Downloads</b>
                 location where we store temporary page
                 copies (e.g. <span style="white-space: nowrap;"><i>recoll-we</i></span>).</br> 
-                This is empty by default. If you set a value, you will
+                This is empty by default. It can't be a hidden directory
+                (name beginning with a '.' on Linux). If you set a value, you will
                 also need to set the <b>webdownloadsdir</b> recoll
-                configuration variable to the full location path.<br/>
-                In recoll.conf, e.g.: <span style="white-space:nowrap;">
+                configuration variable to the full location path 
+                in recoll.conf, e.g.: <span style="white-space:nowrap;">
                   <i>webdownloadsdir=/home/mylogin/Downloads/recoll-we</i>.
             </span></p></div>
           </fieldset>
@@ -234,7 +235,9 @@
           <fieldset>
             <legend>&nbsp;Automatic Action&nbsp;</legend>
             <div>
-              <input id="options-autosave" type="checkbox"/><label for="options-autosave">Automatically index pages</label> 
+              <input id="options-autosave" type="checkbox"/>
+              <label for="options-autosave">Automatically download pages
+              for indexing (no need to click the icon)</label> 
             </div>
             <div>
               <input id="options-httpsalso" type="checkbox"/><label for="options-httpalso">Also do it for pages with secure content (https)</label> 
@@ -246,10 +249,18 @@
           <fieldset>
             <legend>&nbsp;URL selection&nbsp;</legend>
             <div>
-              <input id="options-nomatch-dosave" type="checkbox"/><label for="options-nomatch-dosave">Save by default (when no rules set matches)</label>
+            <p>There are two sets of rules, for selecting URLs, or for
+              rejecting them, for automatic downloading. These do not apply
+              when you click the icon: the extension will always try to
+              download in this case.</p>
+            <p>If both sets are empty, pages are downloaded by default (the
+              two checkboxes below have no effect).</p>
+            <input id="options-nomatch-dosave" type="checkbox"/>
+            <label for="options-nomatch-dosave">Save when neither rules set matches</label>
             </div>
             <div>
-              <input id="options-conflict-dosave" type="checkbox"/><label for="options-conflict-dosave">Save when both rules sets match</label>
+              <input id="options-conflict-dosave" type="checkbox"/>
+              <label for="options-conflict-dosave">Save when both rules sets match</label>
             </div>
 
             <table id="options-url-include"></table>
