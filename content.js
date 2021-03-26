@@ -59,6 +59,7 @@ function loadOptions(object)
     for (var t = 0; t < 2; t++) {
         var key = keys[t];
         var sk = sks[t];
+        urlRules[sk] = []
         if (key in object) {
             for (var i = 0; i < object[key].length; i++) {
                 urlRules[sk].push(object[key][i]);
@@ -154,6 +155,7 @@ function performAction(srcurl)
         if (menuAction == 1) {
             sk = 'inc';
             key = 'options-url-include';
+            doSave();
         } else {
             sk = 'exc';
             key = 'options-url-exclude';
