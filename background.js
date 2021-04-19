@@ -19,6 +19,7 @@ var isFirefox;
 var ffVersion;
 
 var showSubmenu;
+var downloadsubdir;
 
 var badgeTabId;
 
@@ -68,6 +69,7 @@ function initialize()
         
         /* Initialize local options */
         showSubmenu = object["options-showsubmenu"];
+        downloadsubdir = object["options-downloadsubdir"];
         
         /* Add context menu items */
         context = showSubmenu ? "all" : "browser_action";
@@ -165,6 +167,28 @@ function addListeners()
     
     /* Message received listener */
     chrome.runtime.onMessage.addListener(runAction);
+
+	//  When this extension is not running in Firefox, during the download
+	//  process this listener will set the downloadsubdir, the conflictAction,
+	//  and block the saveAs dialog
+	if (!isFirefox) {
+		chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
+			//  Avoid conflicting with other extensions that have their own
+			//  onDeterminingFilename listeners.  (Note that these types of 
+			//  listeners are run in the order that their extensions were
+			//  installed and the last one wins.  So a poorly written listener
+			//  has the potential to mess everything up for everyone else.)
+			if (item.mime = "text/x-recoll-data") {
+				var filename = item.filename;
+				if (downloadsubdir) {
+					//  Strip leading or trailing whitespace and slashes
+					downloadsubdir = downloadsubdir.replace(/^[\s\/]+|[\s\/]+$/gm,"");
+					filename = downloadsubdir + "/" + filename;
+				}
+				suggest({filename: filename, conflictAction: "overwrite", saveAs: null});
+			}
+		});
+	}
 }
 
 async function runAction(message)
@@ -200,44 +224,61 @@ async function doDownload(data, location, filename)
         location = URL.createObjectURL(blob);
     }
 
-    try {
-        let id =  await browser.downloads.download({
-            filename : filename,
-            url : location,
-            saveAs : false,
-            conflictAction : browser.downloads.FilenameConflictAction.OVERWRITE,
-        });
+	if (isFirefox) {
+		try {
+			let id =  await browser.downloads.download({
+				filename : filename,
+				url : location,
+				saveAs : false,
+				conflictAction : browser.downloads.FilenameConflictAction.OVERWRITE,
+			});
 
-        /*console.log("doDownload: downloads.download returned ", {id});*/
-        var state;
-        var error;
-        do {
-            state, error = await waitDownload(id);
-        } while (browser.downloads.State.IN_PROGRESS === state);
+			/*console.log("doDownload: downloads.download returned ", {id});*/
+			var state;
+			var error;
+			do {
+				state, error = await waitDownload(id);
+			} while (browser.downloads.State.IN_PROGRESS === state);
 
-        if (!state) {
-            state = browser.downloads.State.INTERRUPTED;
-            error = `Download ID not found, id: ${id}`;
-        }
+			if (!state) {
+				state = browser.downloads.State.INTERRUPTED;
+				error = `Download ID not found, id: ${id}`;
+			}
 
-        if (error) {
-            error = `Error save file:\n${filename}\nerror: ${error}`;
-        }
+			if (error) {
+				error = `Error save file:\n${filename}\nerror: ${error}`;
+			}
 
-        if (browser.downloads.State.COMPLETE === state) {
-        } else {
-            throw error;
-        }
+			if (browser.downloads.State.COMPLETE === state) {
+			} else {
+				throw error;
+			}
 
-        return id;
-    } catch (e) {
-        e = String(e);
-        console.error(e);
-    } finally {
-        if (blob) {
-            URL.revokeObjectURL(location);
-        }
-    }
+			return id;
+		} catch (e) {
+			e = String(e);
+			console.error(e);
+		} finally {
+			if (blob) {
+				URL.revokeObjectURL(location);
+			}
+		}
+	} else {  //  When not Firefox ...
+		//  Create a link for the blob in the DOM
+		var blobLink = document.createElement('a');
+		blobLink.href = location;
+
+		// Set the filename to be used when downloading this link
+		// (Must be file name only, no path is allowed here.  The path will
+		// be added during the download by the onDeterminingFilename listener.)
+		blobLink.download = filename.split('/').reverse()[0];;
+
+		// Trigger the click event on this link, i.e., download the file
+		blobLink.click();
+	}
+
+	//  Release the blob URL (free up blob memory)
+	URL.revokeObjectURL(blob); 
 
 }
 
