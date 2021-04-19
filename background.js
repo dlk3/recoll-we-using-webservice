@@ -19,7 +19,7 @@ var isFirefox;
 var ffVersion;
 
 var showSubmenu;
-var downloadsubdir;
+var webserviceport = "5000";  // dlk
 
 var badgeTabId;
 
@@ -56,7 +56,8 @@ function initialize()
                           "options-httpsalso": true,
                           "options-nomatch-dosave": true,
                           "options-conflict-dosave": false,
-                          "options-downloadsubdir": ""
+                          "options-downloadsubdir": "",
+                          "options-webserviceport": "5000"  // dlk
                          };
         for (opt in opdefaults) {
             if (!(opt in object)) {
@@ -69,7 +70,7 @@ function initialize()
         
         /* Initialize local options */
         showSubmenu = object["options-showsubmenu"];
-        downloadsubdir = object["options-downloadsubdir"];
+        webserviceport = object["options-webserviceport"];  // dlk
         
         /* Add context menu items */
         context = showSubmenu ? "all" : "browser_action";
@@ -167,28 +168,6 @@ function addListeners()
     
     /* Message received listener */
     chrome.runtime.onMessage.addListener(runAction);
-
-	//  When this extension is not running in Firefox, during the download
-	//  process this listener will set the downloadsubdir, the conflictAction,
-	//  and block the saveAs dialog
-	if (!isFirefox) {
-		chrome.downloads.onDeterminingFilename.addListener(function(item, suggest) {
-			//  Avoid conflicting with other extensions that have their own
-			//  onDeterminingFilename listeners.  (Note that these types of 
-			//  listeners are run in the order that their extensions were
-			//  installed and the last one wins.  So a poorly written listener
-			//  has the potential to mess everything up for everyone else.)
-			if (item.mime = "text/x-recoll-data") {
-				var filename = item.filename;
-				if (downloadsubdir) {
-					//  Strip leading or trailing whitespace and slashes
-					downloadsubdir = downloadsubdir.replace(/^[\s\/]+|[\s\/]+$/gm,"");
-					filename = downloadsubdir + "/" + filename;
-				}
-				suggest({filename: filename, conflictAction: "overwrite", saveAs: null});
-			}
-		});
-	}
 }
 
 async function runAction(message)
@@ -217,69 +196,27 @@ async function runAction(message)
 
 async function doDownload(data, location, filename)
 {
-    /*console.log("doDownload: filename "+filename+" location "+location); */
-    var blob = null;
-    if (data) {
-        blob = new Blob([data], {type: "text/x-recoll-data"});
-        location = URL.createObjectURL(blob);
-    }
-
-	if (isFirefox) {
-		try {
-			let id =  await browser.downloads.download({
-				filename : filename,
-				url : location,
-				saveAs : false,
-				conflictAction : browser.downloads.FilenameConflictAction.OVERWRITE,
-			});
-
-			/*console.log("doDownload: downloads.download returned ", {id});*/
-			var state;
-			var error;
-			do {
-				state, error = await waitDownload(id);
-			} while (browser.downloads.State.IN_PROGRESS === state);
-
-			if (!state) {
-				state = browser.downloads.State.INTERRUPTED;
-				error = `Download ID not found, id: ${id}`;
-			}
-
-			if (error) {
-				error = `Error save file:\n${filename}\nerror: ${error}`;
-			}
-
-			if (browser.downloads.State.COMPLETE === state) {
-			} else {
-				throw error;
-			}
-
-			return id;
-		} catch (e) {
-			e = String(e);
-			console.error(e);
-		} finally {
-			if (blob) {
-				URL.revokeObjectURL(location);
-			}
+	//  dlk - Send the data to a local web service and let it do the save
+	var payload = {
+		filename: filename,
+		content: data
+	};
+	fetch("http://localhost:"+webserviceport+"/index", {
+		method: 'POST',
+		body: JSON.stringify(payload),
+		headers: {
+			'Content-Type': 'application/json'
 		}
-	} else {  //  When not Firefox ...
-		//  Create a link for the blob in the DOM
-		var blobLink = document.createElement('a');
-		blobLink.href = location;
-
-		// Set the filename to be used when downloading this link
-		// (Must be file name only, no path is allowed here.  The path will
-		// be added during the download by the onDeterminingFilename listener.)
-		blobLink.download = filename.split('/').reverse()[0];;
-
-		// Trigger the click event on this link, i.e., download the file
-		blobLink.click();
-	}
-
-	//  Release the blob URL (free up blob memory)
-	URL.revokeObjectURL(blob); 
-
+	}).then(function(response) {
+		if (!response.ok) {
+			throw Error(response.statusText);
+		}
+		return response;;
+	}).then(function(response) {
+		console.log("recoll-we successfully sent "+filename+" to local web service");
+	}).catch(function(error) {
+		console.log("recoll-we failed to send "+filename +" to local web service\nError message: "+error);
+	});
 }
 
 function mswait(ms = 200) {
