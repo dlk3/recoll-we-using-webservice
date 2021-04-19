@@ -4,7 +4,7 @@ The [Recoll WE Firefox extension](https://addons.mozilla.org/en-US/firefox/addon
 
 The problem this version of the extension tries to solve is that the existing process results in two files being added to the browser's downloads menu and progress bar for every web page visited.  This process is somewhat "noisy" and I'd prefer it to be more invisible.   In this version of the extension I have changed the process so that the extension now sends the content of each web page visited to a local web service.  That web service then writes to disk the two files that the Recoll indexing engine needs.  From there indexing by the Recoll indexing engine continues as it normally would.  Using this method avoids adding anything to the browser's download list or to the download progress bar.  The process is now essentially invisible.
 
-To use this method, my version of the extension must be installed into the browser and the web service, a python script, must be running in the background on the workstation.  Download the <code>recoll-we-using-webservice.crx</code> and <code>recoll-we-webservice.py</code> from this project.
+To use this method, my version of the extension must be installed into the browser and the web service, a python script, must be running in the background on the workstation.  Download the <code>recoll-we-using-webservice.crx</code> and <code>recoll-we-webservice.py</code> from this project's [Releases](https://framagit.org/dlk3/recoll-we-using-webservice/-/releases) tab.
 
 The Python script is run on the workstation under your userid, it is not a system-wide service.  To run it do:
 
