@@ -1,9 +1,9 @@
 {
     "manifest_version": 2,
-    "name": "Recoll WE",
-    "version": "2.1",
+    "name": "Recoll WE (Using Webservice)",
+    "version": "0.1",
     
-    "description": "Enqueue visited WEB pages for storage and indexing by Recoll.",
+    "description": "Index web pages visited in Google Chrome with Recoll.",
     "icons": { "16": "icon16.png", "32": "icon32.png", "48": "icon48.png",
                "128": "icon128-96.png" },
     
