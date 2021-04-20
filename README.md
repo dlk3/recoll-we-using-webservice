@@ -6,7 +6,7 @@ The problem this version of the extension tries to solve is that the existing pr
 
 Since I use this extension on Google Chrome, that's how it is packaged in this project.  I expect it will also work on Firefox but I have not tested or packaged it for that browser.  Instead I have shared code with the extension's owner that would allow his Firefox extension to be modified to support Google Chrome if he wants to do that, using its existing file download process.
 
-To use my version of the extension it must be installed into the browser manually.  It is not available from the Chrome web store.  Download and the CRX file that can be found in the Releases tab of this project and install it in the browser.  In addition to installing the extension, the web service, a python script, must be running in the background on the workstation.  Download the <code>recoll-we-webservice.py</code> file found in the Releases tab of this project.
+To use my version of the extension it must be installed into the browser manually.  It is not available from the Chrome web store.  Download the CRX file that can be found in the Releases tab of this project and install it in the browser.  In addition to installing the extension, the web service, a python script, must be running in the background on the workstation.  Download the <code>recoll-we-webservice.py</code> file found in the Releases tab of this project.
 
 The Python script is run on the workstation under your userid so that it can have access to your browser downloads directory.  If you have set your browser to use something other than the default <code>~/Downloads</code> directory then you should modify the the browser downloads directory set at the top of the script before you run it.  To run the script do:
 
