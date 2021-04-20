@@ -14,6 +14,6 @@ The Python script is run on the workstation under your userid so that it can hav
 
 Add the <code>-p ####</code> option after <code>run</code> to use a port other than 5000 for the web service.  A corresponding option has been added to the extension's settings page to tell the extension what port number it should use to connect to the web service. 
 
-I use Fedora Linux.  On Fedora, <code>dnf install python3-flask</code> installs the required [Flask web framework](https://flask.palletsprojects.com/) module.
+I use Fedora Linux.  On Fedora, <code>sudo dnf install python3-flask</code> installs the required [Flask web framework](https://flask.palletsprojects.com/) module.
 
-The web service script writes a log file at /tmp/recoll-we-webservice.log.  It rotates that log file automatically.
+The web service script writes a log file at <code>/tmp/recoll-we-webservice.log</code>.  It rotates that log file automatically.
