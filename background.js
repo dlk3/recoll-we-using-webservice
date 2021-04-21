@@ -215,6 +215,7 @@ async function doDownload(data, location, filename)
 	}).then(function(response) {
 		console.log("recoll-we successfully sent "+filename+" to local web service");
 	}).catch(function(error) {
+		alertNotify("Browser extension unable to send data to local web service via port "+webserviceport+". Check web service is installed, running and the port is configured correctly.");
 		console.log("recoll-we failed to send "+filename +" to local web service\nError message: "+error);
 	});
 }

@@ -1,15 +1,14 @@
 {
     "manifest_version": 2,
     "name": "Recoll WE (Using Webservice)",
-    "version": "0.1",
+    "version": "0.2",
     
     "description": "Index web pages visited in Google Chrome with Recoll.",
     "icons": { "16": "icon16.png", "32": "icon32.png", "48": "icon48.png",
                "128": "icon128-96.png" },
     
-    "minimum_chrome_version": "55",
-    "permissions": [ "activeTab", "tabs", "webNavigation", "contextMenus",
-                     "notifications", "storage", "downloads" ],
+    "minimum_chrome_version": "35",
+    "permissions": [ "storage", "contextMenus", "activeTab", "tabs", "notifications" ],
     
     "browser_action": { "default_icon": { "16": "icon16.png" },
                         "default_title": "Save to Recoll" },
