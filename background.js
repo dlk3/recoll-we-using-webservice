@@ -56,7 +56,6 @@ function initialize()
                           "options-httpsalso": true,
                           "options-nomatch-dosave": true,
                           "options-conflict-dosave": false,
-                          "options-downloadsubdir": "",
                           "options-webserviceport": "5000"  // dlk
                          };
         for (opt in opdefaults) {

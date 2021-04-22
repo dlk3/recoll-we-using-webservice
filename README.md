@@ -8,12 +8,12 @@ Since I use this extension on Google Chrome, that's how it is packaged in this p
 
 To use my version of the extension it must be installed into the browser manually.  It is not available from the Chrome web store.  Download the <code>recoll-we-using-webservice.crx</code> file that can be found in the Releases tab of this project drop it onto the Extensions page in the browser to install it.  In addition to installing the extension, the web service, a python script, must be running in the background on the workstation.  Download the <code>recoll-we-webservice.py</code> file found in the Releases tab of this project.
 
-The Python script is run on the workstation under your userid so that it can have access to your browser downloads directory.  If you have set your browser to use something other than the default <code>~/Downloads</code> directory then you should modify the the browser downloads directory set at the top of the script before you run it.  To run the script do:
+The Python script is run on the workstation under your userid so that it has access to your Recoll webqueuedir directory (<code>~/.recoll/ToIndex</code> by default.) To run the script do:
 
 <pre>FLASK_APP=/path/to/recoll-we-webservice.py python -m flask run &</pre>
 
 Add the <code>-p ####</code> option after <code>run</code> to use a port other than 5000 for the web service.  A corresponding option has been added to the extension's settings page to tell the extension what port number it should use to connect to the web service. 
 
-The script requires the [Flask web framework](https://flask.palletsprojects.com/) module for Python. required by the script.  On Fedora Linux, where I live, <code>sudo dnf install python3-flask</code> installs this module.  I expect that other Linux distributions have similar install packages and commands.
+The script requires the [Flask web framework](https://flask.palletsprojects.com/) module for Python. On Fedora Linux, where I live, <code>sudo dnf install python3-flask</code> installs this module.  I expect that other Linux distributions have similar install packages and commands.
 
 The web service script writes a log file at <code>/tmp/recoll-we-webservice.log</code>.  It rotates that log file automatically when it reaches 250KB in size.

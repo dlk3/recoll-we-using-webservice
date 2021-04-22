@@ -23,7 +23,6 @@ var autosave;
 var httpsalso;
 var nomatchsave;
 var conflictsave;
-var downloadsubdir;
 
 var urlRules = {
     inc: [],
@@ -52,7 +51,6 @@ function loadOptions(object)
     httpsalso = object["options-httpsalso"];
     nomatchsave = object["options-nomatch-dosave"];
     conflictsave = object["options-conflict-dosave"];
-    downloadsubdir = object["options-downloadsubdir"];
     
     var keys = ["options-url-include", "options-url-exclude"];
     var sks = ["inc", "exc"];
@@ -304,21 +302,13 @@ function maybeSave()
 /* Return the content base file name for a given URL */
 function getContentName(url)
 {
-    let loc = "recoll-we-c-" + recoll_md5.hex_md5(url) + ".rclwe";
-    if (downloadsubdir) {
-        loc = downloadsubdir + "/" + loc;
-    }
-    return loc;
+    return "firefox-recoll-web-" + recoll_md5.hex_md5(url);
 }
 
 /* Return the metadata base file name path for a given url */
 function getMetaName(url)
 {
-    let loc = "recoll-we-m-" + recoll_md5.hex_md5(url) + ".rclwe";
-    if (downloadsubdir) {
-        loc = downloadsubdir + "/" + loc;
-    }
-    return loc;
+    return "_firefox-recoll-web-" + recoll_md5.hex_md5(url);
 }
 
 function metadata(url, contentType, charset)

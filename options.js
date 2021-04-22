@@ -24,11 +24,6 @@ var urlRules = {
 
 function onLoadPage(event)
 {
-	// dlk - hide the webserviceport option form when in Firefox
-	if (navigator.userAgent.indexOf("Firefox") >= 0) {
-		document.getElementById("options-wsport").hidden = true;
-	}
-	
     /* Load options from local storage */
     console.log("ONLOADPAGE");
     chrome.storage.local.get(null,
@@ -45,10 +40,6 @@ function onLoadPage(event)
         }
 
         let dldsbd = "";
-        if ("options-downloadsubdir" in object) {
-            dldsbd = object["options-downloadsubdir"];
-        }
-        document.getElementById("options-downloadsubdir").value = dldsbd;
 		let wsport = "5000";
         if ("options-webserviceport" in object) {
             wsport = object["options-webserviceport"];
@@ -232,8 +223,6 @@ function onClickSave(event)
     }
     opts["options-url-include"] = urlRules["inc"];
     opts["options-url-exclude"] = urlRules["exc"];
-    opts["options-downloadsubdir"] =
-        document.getElementById("options-downloadsubdir").value;
 	opts["options-webserviceport"] =
         document.getElementById("options-webserviceport").value;
     chrome.storage.local.set(opts);
