@@ -1,15 +1,40 @@
 #!/usr/bin/env python
 
-from flask import Flask
-from flask import request
+#  Copyright (C) 2021  David King <dave@daveking.com>
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#  See https://framagit.org/dlk3/recoll-we-using-webservice for information
+#  about this script.
+
+try:
+	from flask import Flask
+	from flask import request
+except Exception as e:
+	print("This script requires the Flask web application framework module.  Please use\nyour ditribution's package management tools to install it.")
+	exit(1)
+	
 import os
+import sys
 import logging
 
-# Specify the default downloads folder configured in this user's Google Chrome browser
-my_chrome_downloads_folder = os.path.join(os.environ['HOME'], 'Downloads')
-# my_chrome_downloads_folder = '/home/userid/Downloads'
+try:
+    from recoll import rclconfig
+except:
+    import rclconfig
 
-#  Configure application logging
+#  Configure Flask application logging
 from logging.config import dictConfig
 dictConfig({
     'version': 1,
@@ -29,27 +54,42 @@ dictConfig({
     }
 })
 
-#  Define the application
+# Get target webqueue recoll directory from recoll configuration file
+config = rclconfig.RclConfig()
+webqueuedir = config.getConfParam("webqueuedir")
+if not webqueuedir:
+    if sys.platform == "win32":
+        webqueuedir = "~/AppData/Local/RecollWebQueue"
+    else:
+        webqueuedir = "~/.recollweb/ToIndex"
+webqueuedir = os.path.expanduser(webqueuedir)
+if not os.path.exists(webqueuedir):
+	try:
+		os.makedirs(webqueuedir)
+	except Exception as e:
+		msg = "Failed to create the \"{}\" directory. Error message: \"{}\"".format(webqueuedir, e)
+		app.logger.error(msg)
+		print(msg, file=sys.stderr)
+		exit(1)
+
+#  Define this as a Flask web service application
 app = Flask(__name__)
 
-#  Define the single POST API supported by this web service
+#  Define the sole POST API supported by this Flask application
 @app.route('/index', methods=['POST'])
 def index():
 	req = request.get_json()
-	filename = os.path.join(my_chrome_downloads_folder, req['filename'])
-	dn, fn = os.path.split(filename)
-	if not os.path.exists(dn):
-		try:
-			os.makedirs(dn)
-		except Exception as e:
-			msg = "Failed to create the \"{}\" directory. Error message: \"{}\"".format(dn, e)
-			app.logger.error(msg)
-			return msg, 400
-	with open(filename, 'w') as f:
-		f.write(req['content']);
-	msg = 'Data successfully written to {}'.format(filename)
+	filename = os.path.join(webqueuedir, req['filename'])
+	try:
+		with open(filename, 'w') as f:
+			f.write(req['content']);
+	except Exception as e:
+		msg = "Unable to write to the \"{}\" file. Error message: \"{}\"".format(filename, e)
+		app.logger.error(msg)
+		return msg, 400
+	msg = "Data successfully written to {}".format(filename)
 	app.logger.info(msg)
-	return 'msg', 201
+	return msg, 201
 
 if __name__ == '__main__':
 	app.run()
